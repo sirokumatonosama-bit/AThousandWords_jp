@@ -19,6 +19,8 @@ A powerful, customizable, and user-friendly batch captioning tool for VLM (Visio
 - **Customizable Input Prompts**: Use prompt presets, customized prompt  presets, or load input prompts from text-files or from image metadata.
 - **Video Captioning**: Switch between Image or Video models.
 
+<img width="2552" height="1325" alt="image" src="https://github.com/user-attachments/assets/4385dbbf-7503-49cc-8a56-936658526098" />
+
 ---
 
 ## Setup
