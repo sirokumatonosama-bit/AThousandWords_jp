@@ -7,10 +7,14 @@ Allows printing in two modes:
 2. Minimal: Prints only critical information (start, stats, errors) via force=True.
 """
 
+import sys
 from colorama import Fore, Style, init
 
 # Initialize colorama
 init(autoreset=True)
+
+# Preserve the real terminal stdout before anything (Gradio, etc.) can redirect it
+_terminal_stdout = sys.__stdout__
 
 class ConsoleLogger:
     def __init__(self):
@@ -39,7 +43,7 @@ class ConsoleLogger:
         if color:
             msg = f"{color}{msg}{Style.RESET_ALL}"
             
-        print(msg, end=end, **kwargs)
+        print(msg, end=end, file=_terminal_stdout, flush=True, **kwargs)
         
     def header(self, text, char="=", width=60, color=Fore.WHITE, force=False):
         """Print a centered header block."""

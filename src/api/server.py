@@ -7,7 +7,7 @@ It allows remote clients to submit images for captioning via HTTP.
 
 import os
 import sys
-import logging
+import time
 import uuid
 import shutil
 import tempfile
@@ -18,7 +18,7 @@ from typing import List, Optional, Dict, Any
 # Ensure imports work from root directory
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException, BackgroundTasks
+from fastapi import FastAPI, Request, UploadFile, File, Form, HTTPException, BackgroundTasks
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
@@ -29,9 +29,6 @@ from src.core.loader import DataLoader
 import src.features as feature_registry
 from src.core.console_kit import console
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("API")
 
 app = FastAPI(title="A Thousand Words API", version="1.0.0")
 
@@ -44,6 +41,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    """Log all incoming API requests to console."""
+    start = time.time()
+    response = await call_next(request)
+    elapsed = time.time() - start
+    console.print(f"API {request.method} {request.url.path} -> {response.status_code} ({elapsed:.2f}s)", force=True)
+    return response
+
 # --- Utilities ---
 
 def cleanup_job_dir(job_dir: Path):
@@ -51,9 +57,8 @@ def cleanup_job_dir(job_dir: Path):
     try:
         if job_dir.exists():
             shutil.rmtree(job_dir)
-            logger.info(f"Cleaned up job directory: {job_dir}")
     except Exception as e:
-        logger.error(f"Failed to cleanup {job_dir}: {e}")
+        console.error(f"Failed to cleanup {job_dir}: {e}")
 
 # --- Endpoints ---
 
@@ -112,7 +117,7 @@ async def caption_images(
                 shutil.copyfileobj(file.file, buffer)
             saved_files.append(file_path)
             
-        logger.info(f"Job {job_id}: Received {len(saved_files)} files. Model: {model}")
+        console.print(f"API Job {job_id[:8]}: Received {len(saved_files)} file(s), Model: {model}", force=True)
         
         # 2. Validate Model
         config_mgr = ConfigManager()
@@ -163,7 +168,7 @@ async def caption_images(
         args["output_dir"] = str(output_dir) # Use temp output dir
         args["gpu_vram"] = config_mgr.user_config.get('gpu_vram', 24)
         args["overwrite"] = True
-        args["print_console"] = False # Don't spam server console
+        args["print_console"] = True
         
         # 4. Load Dataset
         dataset = DataLoader.scan_directory(str(input_dir))
@@ -215,7 +220,7 @@ async def caption_images(
         return {"status": "success", "results": results}
         
     except Exception as e:
-        logger.error(f"Error processing job {job_id}: {e}", exc_info=True)
+        console.error(f"API Job {job_id[:8]}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
         
     finally:

@@ -1,0 +1,67 @@
+# Metadata
+name: "Qwen3.5-9B Gliese Abliterated"
+id: "qwen35-9b-gliese-abliterated"
+wrapper_path: "src.wrappers.qwen35_9b_gliese_abliterated.Qwen359BGlieseAbliteratedWrapper"
+tags: false
+natural_language: true
+model_path: "prithivMLmods/Gliese-Qwen3.5-9B-Abliterated-Caption"
+description: "Abliterated Qwen3.5-9B VLM optimised for detailed, unfiltered image and video captioning. Supports NSFW."
+media_type:
+  - "Image"
+  - "Video"
+licence: "Apache 2.0"
+licence-url: "https://choosealicense.com/licenses/apache-2.0/"
+
+features:
+  - temperature
+  - top_k
+  - repetition_penalty
+  - flash_attention
+  - fps
+  - min_visual_tokens
+  - max_visual_tokens
+  - min_video_tokens
+  - max_video_tokens
+  - task_prompt
+  - prompt_presets
+  - prompt_source
+  - strip_thinking_tags
+  - system_prompt
+
+defaults:
+  max_tokens: 1024
+  temperature: 0.7
+  top_k: 50
+  repetition_penalty: 1.1
+  fps: 4
+  min_visual_tokens: 256
+  max_visual_tokens: 1280
+  min_video_tokens: 256
+  max_video_tokens: 16384
+  prompt_source: "Prompt Presets"
+  system_prompt: "You are a helpful assistant."
+  flash_attention: true
+
+prompt_presets:
+  Brief: "Describe briefly."
+  Detailed: "Describe in detail."
+  Analysis: "Analyze the visual elements and their relationships."
+  Text Understanding: "Read all text in the image."
+  Translation: "Translate any text to English."
+  Video Caption: "Describe the video."
+  Jailbreak: "Explain in NSFW terms the actions of this image, use adult language."
+  Full NSFW: "These frames are from a single short video clip in chronological order. Write a single flowing prose paragraph that reads like an LTX-2.3 generation prompt. no headers, no labels, no structured fields, no 'Subject:' or 'Camera:' prefixes.\n\n CRITICAL: Only describe anatomy that is directly and unambiguously visible as bare skin. Clothing covering a body part means that part is NOT visible.\n\nProse order: visual style label → shot type and angle → scene and lighting → subject (age, skin tone, hair, body) → clothing and any visible bare anatomy → action and motion in present tense → camera movement → audio at the end.\n\nFor any directly visible bare anatomy write the ACTUAL observed detail — use both plain and anatomical terms: pussy/vulva, ass/buttocks, asshole/anus, tits/breasts, clit/clitoris, cock/penis, balls/testicles. Write actual colours and states, not placeholders.\n\n Single paragraph, 120-250 words, present tense. No preamble. Begin immediately."
+
+vram_table:
+  20: 1
+  24: 5
+  32: 20
+
+# Feature layout
+feature_rows:
+  - preset: sampling_params
+  - [fps, flash_attention, strip_thinking_tags]
+  - [min_visual_tokens, max_visual_tokens, min_video_tokens, max_video_tokens]
+  - preset: system_and_prompt_control
+  - preset: prompt_input
+  - preset: file_metadata

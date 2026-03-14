@@ -253,7 +253,7 @@ if __name__ == "__main__":
     # 3. Start API Server (Background)
     server_name = "0.0.0.0" if args.server else "127.0.0.1"
     
-    if args.enable_api:
+    if args.enable_api or args.server:
         api_thread = threading.Thread(
             target=run_api_server,
             args=(server_name, args.api_port),

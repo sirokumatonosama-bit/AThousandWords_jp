@@ -9,7 +9,7 @@ A powerful, customizable, and user-friendly batch captioning tool for VLM (Visio
 
 ## Key Features
 
-- **Extensive Model Support**: 20+ models including WD14, JoyTag, JoyCaption, Florence2, Qwen 2.5, Qwen 3.5, Moondream(s), Paligemma, Pixtral, smolVLM, ToriiGate).
+- **Extensive Model Support**: 20+ models including WD14, JoyTag, JoyCaption, Florence2, Qwen 2.5, Qwen 3.5, Qwen3.5-9B Gliese Abliterated, Moondream(s), Paligemma, Pixtral, smolVLM, ToriiGate).
 - **Batch Processing**: Process entire folders and datasets in one go with a GUI or simple CLI command.
 - **Multi Model Batch Processing**: Process the same image with several different models all at once (queued).
 - **Dual Interface**:
@@ -63,6 +63,11 @@ A powerful, customizable, and user-friendly batch captioning tool for VLM (Visio
    ```bash
    uv pip install -r requirements.txt
    ```
+   > **Note**: This requires transformers 5.x. If the install fails to resolve it from PyPI, install it manually first, then re-run:
+   > ```bash
+   > pip install git+https://github.com/huggingface/transformers.git
+   > uv pip install -r requirements.txt
+   > ```
 
 6. **Launch the Application**:
    ```bash
@@ -75,13 +80,18 @@ A powerful, customizable, and user-friendly batch captioning tool for VLM (Visio
    ```
 
 7. **Server Mode**:
-   To allow access from other computers on your network (and enable file zipping/downloads):
+   To allow access from other computers on your network (and enable file zipping/downloads).
+   This also enables the REST API on port 8000 (`/api/caption`, `/api/models`, `/api/health`):
    ```bash
    gui.bat --server
    ```
    or
    ```bash
    py gui.py --server
+   ```
+   To enable only the REST API without network exposure (localhost only):
+   ```bash
+   py gui.py --enable-api
    ```
 
 ---
@@ -204,6 +214,7 @@ A detailed list of model properties and requirements to get an overview of what 
 | **QwenVL 2.7B** | 24 GB | 0.9 it/s | | ✓ | ✓ | | ✓ | Apache 2.0 |
 | **Qwen2-VL-7B Relaxed** | 24 GB | 0.9 it/s | | ✓ | ✓ | | ✓ | Apache 2.0 |
 | **Qwen3-VL** | 8 GB | 1.36 it/s | | ✓ | ✓ | ✓ | ✓ | Apache 2.0 |
+| **Qwen3.5-9B Gliese Abliterated** | 24 GB | - | | ✓ | ✓ | | ✓ | Apache 2.0 |
 | **Moondream 1** | 8 GB | 0.44 it/s | | ✓ | ✓ | | | Non-Commercial |
 | **Moondream 2** | 8 GB | 0.6 it/s | | ✓ | ✓ | | | Apache 2.0 |
 | **Moondream 3** | 24 GB | 0.16 it/s | | ✓ | ✓ | | | BSL 1.1 |

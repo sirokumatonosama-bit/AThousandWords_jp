@@ -12,7 +12,10 @@ huggingface_hub>=0.24.3
 
 # --- Key Libraries ---
 # Install torch manually
-transformers>=4.43.3
+# transformers 5.x required for qwen3_5 architecture (Qwen3.5-9B models).
+# If pip can't resolve >=5.0.0 from PyPI yet, install manually first:
+#   pip install git+https://github.com/huggingface/transformers.git
+transformers>=5.0.0
 accelerate>=0.26.0
 safetensors
 

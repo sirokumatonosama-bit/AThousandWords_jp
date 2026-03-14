@@ -14,6 +14,7 @@ model_order:
   - qwenvl2.7b
   - qwen2-vl-7b-captioner-relaxed
   - qwen3_vl
+  - qwen35-9b-gliese-abliterated
   - moondream1
   - moondream2
   - moondream3

@@ -65,7 +65,7 @@ class BaseCaptionModel(ABC):
     # =========================================================================
     
     def run(self, dataset, args: Dict[str, Any]) -> List[str]:
-        model_name = self.__class__.__name__.replace("Wrapper", "")
+        model_name = self.config.get('name', self.__class__.__name__.replace("Wrapper", ""))
         
         # Initialize console verbosity
         print_console = get_feature("print_console").validate(args.get('print_console', True))
