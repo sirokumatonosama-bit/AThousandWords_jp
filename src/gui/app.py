@@ -63,6 +63,9 @@ class CaptioningApp:
         # GUI が要求するモデルリスト
         self.models = list(self.available_models.keys())
 
+        # GUI が要求する「有効モデル」
+        self.enabled_models = list(self.available_models.keys())
+
         # 初期モデル
         self.current_model_id = "wd14"
 
