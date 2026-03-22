@@ -1,7 +1,7 @@
 import gradio as gr
 
 # ============================================================
-# 最小構成の設定管理クラス（GUI が要求する機能をすべて実装）
+# 設定管理（GUI が要求する機能をすべて実装）
 # ============================================================
 
 class DummyConfigManager:
@@ -13,7 +13,7 @@ class DummyConfigManager:
             "model": "wd14",
         }
 
-        # モデルごとの設定（GUI が参照する）
+        # モデルごとの設定（GUI が参照）
         self.model_configs = {
             "wd14": {
                 "description": "WD14 タグ付けモデル",
@@ -60,14 +60,19 @@ class CaptioningApp:
             "qwen-vl": "Qwen-VL マルチモーダルモデル",
         }
 
+        # GUI が要求するモデルリスト
+        self.models = list(self.available_models.keys())
+
         # 初期モデル
         self.current_model_id = "wd14"
 
+    # handlers.py が要求
     def get_model_description_html(self, model_id: str) -> str:
         cfg = self.config_mgr.get_model_config(model_id)
         desc = cfg.get("description", "説明なし")
         return f"<b>{model_id}</b><br>{desc}"
 
+    # キャプション生成（ダミー）
     def generate_caption(self, image, model_name, prompt, negative_prompt):
         if image is None:
             return "画像が選択されていません。"
@@ -83,6 +88,7 @@ class CaptioningApp:
 
         return f"【原文】\n{eng}\n\n【訳文】\n{jpn}"
 
+    # GUI 本体
     def create_ui(self):
         with gr.Blocks(title="A Thousand Words - 日本語版") as demo:
             gr.Markdown(
@@ -100,7 +106,7 @@ class CaptioningApp:
 
                     model_name = gr.Dropdown(
                         label="使用するモデル",
-                        choices=list(self.available_models.keys()),
+                        choices=self.models,
                         value=self.current_model_id,
                     )
 
