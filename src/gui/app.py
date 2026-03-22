@@ -20,7 +20,7 @@ class DummyConfigManager:
 
 
 # ============================================================
-# CaptioningApp（config_mgr 付き）
+# CaptioningApp（GUI が要求する属性をすべて実装）
 # ============================================================
 
 class CaptioningApp:
@@ -28,6 +28,23 @@ class CaptioningApp:
         # main.py が必要とする属性
         self.config_mgr = DummyConfigManager()
 
+        # モデル一覧（GUI が参照する）
+        self.available_models = {
+            "wd14": "WD14 タグ付けモデル",
+            "joycaption": "JoyCaption キャプションモデル",
+            "florence2": "Florence2 VLM",
+            "qwen-vl": "Qwen-VL マルチモーダルモデル",
+        }
+
+        # 初期モデル
+        self.current_model_id = "wd14"
+
+    # GUI が要求する関数
+    def get_model_description_html(self, model_id: str) -> str:
+        desc = self.available_models.get(model_id, "説明なし")
+        return f"<b>{model_id}</b><br>{desc}"
+
+    # キャプション生成（ダミー）
     def generate_caption(self, image, model_name, prompt, negative_prompt):
         if image is None:
             return "画像が選択されていません。"
@@ -43,6 +60,7 @@ class CaptioningApp:
 
         return f"【原文】\n{eng}\n\n【訳文】\n{jpn}"
 
+    # GUI 本体
     def create_ui(self):
         with gr.Blocks(title="A Thousand Words - 日本語版") as demo:
             gr.Markdown(
@@ -60,8 +78,8 @@ class CaptioningApp:
 
                     model_name = gr.Dropdown(
                         label="使用するモデル",
-                        choices=["wd14", "joycaption", "florence2", "qwen-vl"],
-                        value="wd14",
+                        choices=list(self.available_models.keys()),
+                        value=self.current_model_id,
                     )
 
                     prompt = gr.Textbox(
