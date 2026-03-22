@@ -33,14 +33,31 @@ class DummyConfigManager:
             },
         }
 
+        # マルチモデル設定（GUI が要求）
+        self.multi_model_settings = {
+            "enabled_models": ["wd14", "joycaption", "florence2", "qwen-vl"],
+            "model_order": ["wd14", "joycaption", "florence2", "qwen-vl"],
+        }
+
+    # main.py が要求
     def get_global_settings(self):
         return self.settings
 
+    # main.py が要求
     def save_global_settings(self, new_settings: dict):
         self.settings.update(new_settings)
 
+    # handlers.py が要求
     def get_model_config(self, model_id: str):
         return self.model_configs.get(model_id, {"description": "説明なし", "params": {}})
+
+    # multi_model_tab.py が要求
+    def load_multi_model_settings(self):
+        return self.multi_model_settings
+
+    # multi_model_tab.py が要求
+    def save_multi_model_settings(self, settings: dict):
+        self.multi_model_settings.update(settings)
 
 
 # ============================================================
@@ -71,70 +88,4 @@ class CaptioningApp:
 
     # handlers.py が要求
     def get_model_description_html(self, model_id: str) -> str:
-        cfg = self.config_mgr.get_model_config(model_id)
-        desc = cfg.get("description", "説明なし")
-        return f"<b>{model_id}</b><br>{desc}"
-
-    # キャプション生成（ダミー）
-    def generate_caption(self, image, model_name, prompt, negative_prompt):
-        if image is None:
-            return "画像が選択されていません。"
-
-        base = f"[Model: {model_name}] "
-        if prompt:
-            base += f"[Prompt: {prompt}] "
-        if negative_prompt:
-            base += f"[Negative: {negative_prompt}] "
-
-        eng = base + "A sample caption describing the image."
-        jpn = "（日本語訳）画像を説明するサンプルキャプションです。"
-
-        return f"【原文】\n{eng}\n\n【訳文】\n{jpn}"
-
-    # GUI 本体
-    def create_ui(self):
-        with gr.Blocks(title="A Thousand Words - 日本語版") as demo:
-            gr.Markdown(
-                """
-# 🖼️ A Thousand Words（日本語版 GUI）
-
-画像からキャプションを生成し、  
-**上に英語（原文）、下に日本語訳（訳文）** を表示します。
-                """
-            )
-
-            with gr.Row():
-                with gr.Column(scale=1):
-                    image_input = gr.Image(label="入力画像", type="pil")
-
-                    model_name = gr.Dropdown(
-                        label="使用するモデル",
-                        choices=self.models,
-                        value=self.current_model_id,
-                    )
-
-                    prompt = gr.Textbox(
-                        label="追加プロンプト（任意）",
-                        placeholder="例：構図やスタイルの指定など",
-                        lines=2
-                    )
-
-                    negative_prompt = gr.Textbox(
-                        label="ネガティブプロンプト（任意）",
-                        placeholder="例：除外したい要素など",
-                        lines=2
-                    )
-
-                    run_button = gr.Button("キャプション生成を開始")
-
-                with gr.Column(scale=1):
-                    gr.Markdown("### 📝 生成結果（原文＋訳文）")
-                    output = gr.Textbox(label="キャプション", lines=10)
-
-            run_button.click(
-                fn=self.generate_caption,
-                inputs=[image_input, model_name, prompt, negative_prompt],
-                outputs=[output],
-            )
-
-        return demo
+        cfg = self.config_mgr.get_model
