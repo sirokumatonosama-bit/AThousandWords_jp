@@ -67,12 +67,17 @@ class CaptioningApp:
         desc = cfg.get("description", "説明なし")
         return f"<b>{model_id}</b><br>{desc}"
 
-    def load_multi_model_settings(self):
-        return self.config_mgr.load_multi_model_settings()
+      def load_multi_model_settings(self):
+          # GUI が期待する形式：
+          # [ (model_id, format), ... ]
+          return [
+              (model_id, "default")
+              for model_id in self.models
+          ]
 
-    def save_multi_model_settings(self, settings: dict):
-        self.config_mgr.save_multi_model_settings(settings)
-        self.enabled_models = settings.get("enabled_models", self.enabled_models)
+      def save_multi_model_settings(self, settings):
+          # settings は [ (model_id, format), ... ] の形式
+          self.enabled_models = [model_id for model_id, fmt in settings]
 
     def generate_caption(self, image, model_name, prompt, negative_prompt):
         if image is None:
