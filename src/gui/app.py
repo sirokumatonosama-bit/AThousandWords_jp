@@ -1,11 +1,34 @@
 import gradio as gr
 
+# ============================================================
+# 最小構成の設定管理クラス（ダミー）
+# ============================================================
+
+class DummyConfigManager:
+    def __init__(self):
+        self.settings = {
+            "vram_gb": 8,
+            "ram_gb": 16,
+            "model": "wd14",
+        }
+
+    def get_global_settings(self):
+        return self.settings
+
+    def save_global_settings(self, new_settings: dict):
+        self.settings.update(new_settings)
+
+
+# ============================================================
+# CaptioningApp（config_mgr 付き）
+# ============================================================
+
 class CaptioningApp:
     def __init__(self):
-        pass
+        # main.py が必要とする属性
+        self.config_mgr = DummyConfigManager()
 
     def generate_caption(self, image, model_name, prompt, negative_prompt):
-        # 本来はモデルを呼び出す
         if image is None:
             return "画像が選択されていません。"
 
